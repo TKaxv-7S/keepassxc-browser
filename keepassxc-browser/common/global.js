@@ -43,6 +43,13 @@ const showNotification = function(message) {
     });
 };
 
+const AddCredentials = {
+    CANCELED: 0,
+    CREATED: 1,
+    ERROR: 2,
+    UPDATED: 3
+};
+
 const AssociatedAction = {
     NOT_ASSOCIATED: 0,
     ASSOCIATED: 1,

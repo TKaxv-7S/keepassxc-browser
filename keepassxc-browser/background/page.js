@@ -43,6 +43,7 @@ const defaultSettings = {
 const AUTO_SUBMIT_TIMEOUT = 5000;
 
 const page = {};
+page.autoLockRequested = false;
 page.autoSubmitPerformed = false;
 page.attributeMenuItems = [];
 page.blockedTabs = [];
@@ -214,6 +215,14 @@ page.clearSubmittedCredentials = async function() {
     page.submittedCredentials = {};
 };
 
+page.clearAutoLockRequested = async function() {
+    page.autoLockRequested = false;
+};
+
+page.getAutoLockRequested = async function() {
+    return page.autoLockRequested;
+};
+
 page.createTabEntry = async function(tabId) {
     page.tabs[tabId] = {
         allowIframes: false,
@@ -252,8 +261,14 @@ page.retrieveCredentials = async function(tab, args = []) {
         page.currentRequest.tabId = tab.id;
     }
 
-    const credentials = await keepass.retrieveCredentials(tab, args);
+    // TODO: Make keepass.js to handle protocol/protocolClient and legacyProtocol/legacyProcotolClient
+    const credentials = await keepass.getCredentials(tab, args);
     page.tabs[tab.id].credentials = credentials;
+
+    if (credentials.autoLockRequested) {
+        page.autoLockRequested = true;
+    }
+
     return credentials;
 };
 
